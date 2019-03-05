@@ -11,7 +11,7 @@ func main() {
 	fmt.Println("a = ", a)
 	fmt.Println("b = ", b)
 
-	c := 125
+	c := 125 //自动推导类型
 	c = 300
 	fmt.Printf("a = %d, b = %s, c = %d", a, b, c)
 }
