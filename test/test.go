@@ -13,5 +13,8 @@ func main() {
 
 	c := 125 //自动推导类型
 	c = 300
-	fmt.Printf("a = %d, b = %s, c = %d", a, b, c)
+	fmt.Printf("a = %d, b = %s, c = %d\n", a, b, c)
+
+	var m = 3.14
+	fmt.Printf("m type is %T\n", m)
 }
