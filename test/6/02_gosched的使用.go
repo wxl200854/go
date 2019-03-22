@@ -12,7 +12,7 @@ func main() {
 		}
 	}()
 	for i := 0; i < 2; i++ {
-		runtime.Gosched()
+		runtime.Gosched() //出让时间片，等待其他协程完成再进行main协程
 		fmt.Println("hello")
 	}
 }
