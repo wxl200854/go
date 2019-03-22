@@ -24,11 +24,16 @@ func main() {
 		fmt.Println("error")
 		return
 	}
-	fmt.Println("m = ", m)
+	// fmt.Println("m = ", m)
 
 	var str string
-	for key, value := m{
-		
+	for key, value := range m {
+		switch data := value.(type) {
+		case string:
+			str = data
+			fmt.Printf("map[%s]的值类型为string， value = %s\n", key, data)
+			fmt.Println("str = ", str)
+		}
 	}
 
 }
