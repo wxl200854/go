@@ -11,7 +11,6 @@ func Printer(str string) {
 	for _, data := range str {
 		fmt.Printf("%c", data)
 		time.Sleep(time.Second)
-
 	}
 	fmt.Printf("\n")
 }
