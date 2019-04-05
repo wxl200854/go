@@ -9,15 +9,22 @@ import (
 func HandleConn(conn net.Conn) {
 	defer conn.Close()
 	addr := conn.RemoteAddr().String()
-	fmt.Println("addr success connect")
+	fmt.Println(addr, " success connect")
 	buf := make([]byte, 1024*2)
-	n, err_read := conn.Read(buf)
-	if err_read != nil {
-		fmt.Println("err_read = ", err_read)
-		return
+	for {
+		n, err_read := conn.Read(buf)
+		if err_read != nil {
+			fmt.Println("err_read = ", err_read)
+			return
+		}
+		fmt.Printf("[%s]: %s\n", addr, string(buf[:n]))
+		// fmt.Println(len(string(buf[:n])))
+		if string(buf[:n-2]) == "exit" {
+			fmt.Println(addr, " exit")
+			return
+		}
+		conn.Write([]byte(strings.ToUpper(string(buf[:n]))))
 	}
-	fmt.Printf("[%s]: %s\n", addr, string(buf[:n]))
-	conn.Write([]byte(strings.ToUpper(string(buf[:n]))))
 }
 
 func main() {
@@ -33,7 +40,8 @@ func main() {
 			fmt.Println("err_accept = ", err_accept)
 			continue
 		}
-
+		// defer conn.Close()
 		go HandleConn(conn)
+
 	}
 }

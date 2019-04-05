@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"os"
 )
 
 func main() {
@@ -12,18 +13,25 @@ func main() {
 		return
 	}
 	defer conn.Close()
-	buf := make([]byte, 1024*2)
-	buf = []byte("are you ok")
-	_, err_write := conn.Write(buf)
-	if err_write != nil {
-		fmt.Println("err_write = ", err_write)
-		return
-	}
+	go func() {
+		str := make([]byte, 1024)
+		for {
+			n, err_os := os.Stdin.Read(str)
+			if err_os != nil {
+				fmt.Println("err_os = ", err_os)
+				return
+			}
+			conn.Write(str[:n])
+		}
+	}()
+	buf := make([]byte, 1024)
+	for {
+		n, err_read := conn.Read(buf)
+		if err_read != nil {
+			fmt.Println("err_read = ", err_read)
+			return
+		}
+		fmt.Println(string(buf[:n]))
 
-	n, err_read := conn.Read(buf)
-	if err_read != nil {
-		fmt.Println("err_read = ", err_read)
-		return
 	}
-	fmt.Println(string(buf[:n]))
 }
