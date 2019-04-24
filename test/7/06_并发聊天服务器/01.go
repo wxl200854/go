@@ -15,12 +15,37 @@ var OnlineMap map[string]Client
 
 var message = make(chan string)
 
-func Manager() {
+func Manager() { //转发消息
+	OnlineMap = make(map[string]Client)
+	for {
+		msg := <-message
+		for _, cli := range OnlineMap {
+			cli.C <- msg
+		}
+	}
+}
 
+func WriteMsgToClient(cli Client, conn net.Conn) {
+	for msg := range cli.C {
+		conn.Write([]byte(msg + "\n"))
+	}
+}
+
+func MakeMsg(cli Client, msg string) (buf string) {
+	buf = "[" + cli.Addr + "]" + cli.Name + msg
+	return
 }
 
 func HandleConn(conn net.Conn) {
+	defer conn.Close()
+	cliAddr := conn.RemoteAddr().String()
+	cli := Client{make(chan string), cliAddr, cliAddr}
+	OnlineMap[cliAddr] = cli
+	go WriteMsgToClient(cli, conn)
+	message <- MakeMsg(cli, "login")
+	for {
 
+	}
 }
 
 func main() {
@@ -40,6 +65,6 @@ func main() {
 			continue
 		}
 
-		go HandleConn(conn)
+		go HandleConn(conn) //处理用户链接
 	}
 }
